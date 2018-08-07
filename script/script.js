@@ -1,11 +1,4 @@
-//const playerSelection = 'rock';
-//const computerSelection = computerPlay();
-//console.log(playRound(playerSelection, computerSelection));
-
-
-// play multiple rounds of rock paper scissors
-
-function game() {
+function playGame() {
     let roundCount = 0;
         gameScore = [0, 0]; // index 0 = player score, index 1 = computer score
     
@@ -30,8 +23,6 @@ function game() {
 }
 
 
-// keeps score of the game and outputs round and game results
-
 function keepScore( roundResult, gameScore ) {
     let currentScore = gameScore; // index 0 = player score, index 1 = computer score
     
@@ -44,13 +35,11 @@ function keepScore( roundResult, gameScore ) {
             break;
         case 2:
             // tie, score unchanged
-    } // end switch
+    }
     
     return currentScore;
 }
 
-
-// declares the winner of the game and outputs the score
 
 function declareWinner( finalScore ) {
     if( finalScore[0] > finalScore[1] ) {
@@ -63,9 +52,6 @@ function declareWinner( finalScore ) {
     
 }
 
-
-// makes sure user chooses rock, paper, or scissors
-// returns true if choice is valid, and false if it is not
 
 function validateSelection( userSelection ){
     let  userChoice = userSelection.toLowerCase();
@@ -82,9 +68,6 @@ function validateSelection( userSelection ){
 }
 
 
-// makes the computer's random choice
-// returns either 'Rock', 'Paper', or 'Scissors'
-
 function computerPlay() {
     let randomNumber = Math.floor((Math.random() * 3) + 1);
     
@@ -95,16 +78,15 @@ function computerPlay() {
             return "Paper";
         case 3:
             return "Scissors";
-    } // end switch
+    }
     
-} // end computerPlay
+}
 
 
-// play a around of Rock Paper Scissors
-// returns 0 when player wins, 1 when computer wins, and 2 when there is a tie
+
+// playRound returns 0 when player wins, 1 when computer wins, and 2 when there is a tie
 
 function playRound( playerSelection, computerSelection ) {
-    //convert strings to all lowercase
     let playerChoice = playerSelection.toLowerCase();
         computerChoice = computerSelection.toLowerCase();
     
@@ -124,13 +106,8 @@ function playRound( playerSelection, computerSelection ) {
         return 1;
     }
     
-    // invalid user input
-    return "Something went wrong! Please choose rock, paper, or scissors";
-    
-} // end playRound
+}
 
-
-// capitalizes the first letter of a given string and leaves the rest lowercase
 
 function capitalize( word ) {
     let lowerCase = word.toLowerCase();
@@ -138,8 +115,4 @@ function capitalize( word ) {
     let firstLetter = lowerCase.slice(0,1);
     firstLetter = firstLetter.toUpperCase();
     return firstLetter.concat(restOfWord); 
-}
-
-function lastLetter( word ) {
-    return word.slice(-1);
 }
