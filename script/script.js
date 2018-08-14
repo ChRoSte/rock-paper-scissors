@@ -1,25 +1,57 @@
-function playGame() {
-    let roundCount = 0;
-        gameScore = [0, 0]; // index 0 = player score, index 1 = computer score
-    
-    while( roundCount < 5 ) {
-        let userChoice = prompt("Choose rock, paper, or scissors"),
-            computerChoice,
-            roundResult;
-        
-        if( !validateSelection(userChoice) )
-            continue;
-        
-        computerChoice = computerPlay();
-        roundResult = playRound(userChoice, computerChoice);
+const buttons = Array.from(document.querySelectorAll(".userChoice"));
+const divs = document.querySelectorAll(".gameDiv");
+const resetBtn = document.querySelector("#reset");
+let score = [0,0]; // index 0 = user score, index 1 = computer score;
 
-        gameScore = keepScore(roundResult, gameScore);
-        
-        roundCount++;
-    } // end while
+resetBtn.addEventListener("click", resetGame);
+buttons.forEach( button => button.addEventListener("click", play) );
+
+function play(e){
+    let result;
     
-    declareWinner( gameScore );
+    if(score[0] >= 5 || score[1] >= 5)
+        resetGame(); //check if previous game ended and reset
     
+    result = playRound(this.id, computerPlay());
+    keepScore(result, score);
+    if(score[0] === 5 || score[1] === 5)
+        declareWinner(score);
+}
+
+function showResult(result){
+    const resultDiv = document.querySelector("#result");
+    clearDiv(resultDiv);
+    let resultText = result;
+    let resultPara = document.createElement("p");
+    resultPara.textContent = resultText;
+    resultDiv.appendChild(resultPara);
+}
+
+function showScore(score){
+    const scoreDiv = document.querySelector("#score");
+    clearDiv(scoreDiv);
+    let scoreText = score;
+    let scorePara = document.createElement("p");
+    scorePara.textContent = scoreText;
+    scoreDiv.appendChild(scorePara);
+}
+
+function showWinner(result){
+    const winnerDiv = document.querySelector("#winner");
+    clearDiv(winnerDiv);
+    let winnerText = result;
+    let winnerPara = document.createElement("p");
+    winnerPara.textContent = winnerText;
+    winnerDiv.appendChild(winnerPara);
+}
+
+function resetGame(){
+    divs.forEach( div => clearDiv(div));
+    score = [0,0];
+}
+
+function clearDiv(div){
+    div.innerHTML = "";
 }
 
 
@@ -27,46 +59,34 @@ function keepScore( roundResult, gameScore ) {
     let currentScore = gameScore; // index 0 = player score, index 1 = computer score
     
     switch( roundResult ) {
-        case 0:
+        case "win":
             currentScore[0] = currentScore[0] + 1;
             break;
-        case 1:
+        case "lose":
             currentScore[1] = currentScore[1] + 1;
             break;
-        case 2:
+        case "tie":
             // tie, score unchanged
     }
     
-    return currentScore;
+    showScore(currentScore);
 }
 
 
 function declareWinner( finalScore ) {
+    let gameResult;
+    
     if( finalScore[0] > finalScore[1] ) {
-        console.log( "You win! Final score: " + finalScore[0] + " to " + finalScore[1]);
+        gameResult = "You win! Final score: " + finalScore[0] + " to " + finalScore[1];
     } else if( finalScore[0] < finalScore[1] ) {
-        console.log( "You lose! Final score: " + finalScore[0] + " to " + finalScore[1]);
+        gameResult = "You lose! Final score: " + finalScore[0] + " to " + finalScore[1];
     } else {
-        console.log( "It's a tie! Final score: " + finalScore[0] + " to " + finalScore[1]);
+        gameResult = "It's a tie! Final score: " + finalScore[0] + " to " + finalScore[1];
     }
     
-}
-
-
-function validateSelection( userSelection ){
-    let  userChoice = userSelection.toLowerCase();
+    showWinner(gameResult);
     
-    if( !(userChoice === "rock")  &&
-        !(userChoice === "paper")  &&
-        !(userChoice === "scissors")
-      ) {
-        console.log( "Something went wrong! Please choose rock, paper, or scissors.");
-        return false;
-    }
-    
-    return true;
 }
-
 
 function computerPlay() {
     let randomNumber = Math.floor((Math.random() * 3) + 1);
@@ -82,30 +102,29 @@ function computerPlay() {
     
 }
 
-
-
-// playRound returns 0 when player wins, 1 when computer wins, and 2 when there is a tie
-
 function playRound( playerSelection, computerSelection ) {
-    let playerChoice = playerSelection.toLowerCase();
-        computerChoice = computerSelection.toLowerCase();
+    let playerChoice = playerSelection.toLowerCase(),
+        computerChoice = computerSelection.toLowerCase(),
+        roundResult, roundResultText;
     
     if( (playerChoice == "rock" && computerChoice == "scissors") ||
         (playerChoice == "scissors" && computerChoice == "paper") ||
         (playerChoice == "paper" && computerChoice == "rock")
       ) {
         playerChoice = capitalize(playerChoice);
-        console.log( "You win! " + playerChoice + " beats " + computerChoice + "." );
-        return 0;
+        roundResultText = "You win! " + playerChoice + " beats " + computerChoice + ".";
+        roundResult = "win";
     } else if (playerChoice === computerChoice) { // player and computer make same choice
-        console.log( "It's a tie!" );
-        return 2;
+        roundResultText = "It's a tie!";
+        roundResult = "tie";
     } else {
         computerChoice = capitalize(computerChoice);
-        console.log( "You lose! " + computerChoice + " beats " + playerChoice + "." );
-        return 1;
+        roundResultText = "You lose! " + computerChoice + " beats " + playerChoice + ".";
+        roundResult = "lose";
     }
     
+    showResult(roundResultText);
+    return roundResult;
 }
 
 
@@ -113,6 +132,7 @@ function capitalize( word ) {
     let lowerCase = word.toLowerCase();
     let restOfWord = lowerCase.slice(1);
     let firstLetter = lowerCase.slice(0,1);
+    
     firstLetter = firstLetter.toUpperCase();
     return firstLetter.concat(restOfWord); 
 }
